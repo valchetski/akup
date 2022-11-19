@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PKUP", "PKUP\PKUP.csproj", "{F4B64389-16EE-4AAC-B008-044BEDA899BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pkup.Console", "src\Pkup.Console\Pkup.Console.csproj", "{9F25BC50-2F66-400D-B803-3734952D313B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pkup", "src\Pkup\Pkup.csproj", "{79C85B49-E34A-4B97-855C-90F9AC6E5146}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F4B64389-16EE-4AAC-B008-044BEDA899BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4B64389-16EE-4AAC-B008-044BEDA899BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4B64389-16EE-4AAC-B008-044BEDA899BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4B64389-16EE-4AAC-B008-044BEDA899BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F25BC50-2F66-400D-B803-3734952D313B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F25BC50-2F66-400D-B803-3734952D313B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F25BC50-2F66-400D-B803-3734952D313B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F25BC50-2F66-400D-B803-3734952D313B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79C85B49-E34A-4B97-855C-90F9AC6E5146}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79C85B49-E34A-4B97-855C-90F9AC6E5146}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79C85B49-E34A-4B97-855C-90F9AC6E5146}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79C85B49-E34A-4B97-855C-90F9AC6E5146}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
