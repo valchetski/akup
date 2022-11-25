@@ -1,4 +1,4 @@
-﻿namespace Pkup.Console
+﻿namespace Pkup.Console.Report
 {
     public class ReportConfig
     {

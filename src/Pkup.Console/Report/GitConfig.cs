@@ -1,8 +1,8 @@
-﻿namespace Pkup.Console
+﻿namespace Pkup.Console.Report
 {
     public class GitConfig
     {
-        public string[]? RepositoriesPaths { get; set; }
+        public string[]? RepositoriesSources { get; set; }
 
         public string? AuthorName { get; set; }
 

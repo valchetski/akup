@@ -1,5 +1,4 @@
-﻿using Flurl;
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 
 namespace Pkup.Git
 {
@@ -27,10 +26,14 @@ namespace Pkup.Git
             return query.ToArray();
         }
 
-        public string GetCommitUrl(Repository repo, Commit commit)
+        public string[] GetRepositories(params string[] searchLocations)
         {
-            // Builds GitHub url
-            return repo.Network.Remotes.First().Url.AppendPathSegments("commit", commit.Id);
+            var repositoriesPaths = new List<string>();
+            foreach (var repositoryPath in searchLocations)
+            {
+                repositoriesPaths.AddRange(Directory.GetDirectories(repositoryPath, ".git", SearchOption.AllDirectories));
+            }
+            return repositoriesPaths.ToArray();
         }
     }
 }

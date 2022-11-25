@@ -6,6 +6,6 @@ namespace Pkup.Git
     {
         Commit[] FindCommits(Repository repo, string? authorName = default, DateTimeOffset? from = default, DateTimeOffset? to = default);
 
-        string GetCommitUrl(Repository repo, Commit commit);
+        string[] GetRepositories(params string[] searchLocations);
     }
 }
