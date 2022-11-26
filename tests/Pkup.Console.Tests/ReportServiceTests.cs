@@ -41,7 +41,8 @@ namespace Pkup.Console.Tests
                 _gitConfig.ToDate,
                 _reportConfig.ProjectName!,
                 _reportConfig.TemplatePath!,
-                _reportConfig.ReportPath!);
+                _reportConfig.ReportPath!,
+                _reportConfig.Tokens!);
 
             // assert
             act.Should().NotThrow();

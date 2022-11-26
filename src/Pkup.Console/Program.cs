@@ -21,7 +21,8 @@ namespace PKUP
                 gitConfig.ToDate,
                 reportConfig.ProjectName!,
                 reportConfig.TemplatePath!,
-                reportConfig.ReportPath!);
+                reportConfig.ReportPath!,
+                reportConfig.Tokens!);
 
             Console.WriteLine($"Press any key to exit...");
             Console.ReadKey();

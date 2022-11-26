@@ -7,5 +7,7 @@
         public string? TemplatePath { get; set; }
 
         public string? ReportPath { get; set; }
+
+        public Dictionary<string, string>? Tokens { get; set; }
     }
 }

@@ -9,6 +9,7 @@
             DateTimeOffset? toDate,
             string projectName,
             string templatePath,
-            string reportPath);
+            string reportPath,
+            Dictionary<string, string> tokens);
     }
 }

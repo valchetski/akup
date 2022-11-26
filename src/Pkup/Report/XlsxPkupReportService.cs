@@ -1,4 +1,5 @@
 ﻿using OfficeOpenXml;
+using System.Linq;
 
 namespace Pkup.Report
 {
@@ -52,6 +53,22 @@ namespace Pkup.Report
 
                         rowIndex++;
                     }
+                }
+
+                if (pkupInfo.Tokens != null)
+                {
+                    foreach (var tokenKeyValue in pkupInfo.Tokens)
+                    {
+                        var token = $"{{{tokenKeyValue.Key}}}";
+                        var cellsWithToken = worksheet.Cells
+                            .Where(x => x.GetValue<string>() != null && x.GetValue<string>().Contains(token))
+                            .ToArray();
+                        foreach (var cellWithToken in cellsWithToken)
+                        {
+                            cellWithToken.Value = cellWithToken.GetValue<string>().Replace(token, tokenKeyValue.Value);
+                        }
+                    }
+                    
                 }
 
                 excelPackage.SaveAs(outputStream);
