@@ -8,6 +8,8 @@
 
         public string? ReportPath { get; set; }
 
+        public string DefaultDateFormat { get; set; } = "dd MMMM";
+
         public Dictionary<string, string>? Tokens { get; set; }
     }
 }

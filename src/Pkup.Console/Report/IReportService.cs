@@ -10,6 +10,7 @@
             string projectName,
             string templatePath,
             string reportPath,
+            string defaultDateFormat,
             Dictionary<string, string> tokens);
     }
 }

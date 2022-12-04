@@ -31,6 +31,7 @@ namespace Pkup.Console.Report
             string projectName,
             string templatePath,
             string reportPath,
+            string defaultDateFormat,
             Dictionary<string, string> tokens)
         {
             _logger.LogInformation("Looking for Git repositories");
@@ -44,21 +45,6 @@ namespace Pkup.Console.Report
             var commits = _gitReportService.GetCommits(repositoriesPaths, authorName, fromDate, toDate);
 
             _logger.LogInformation("Generating report");
-            Dictionary<string, string>? replaceTokens = null;
-            if (tokens != null)
-            {
-                replaceTokens = new Dictionary<string, string>(tokens);
-
-                if (fromDate.HasValue)
-                {
-                    replaceTokens.Add("StartDate", fromDate.Value.ToString("dd MMMM"));
-                }
-
-                if (toDate.HasValue)
-                {
-                    replaceTokens.Add("EndDate", toDate.Value.ToString("dd MMMM"));
-                }
-            }
             var pkupInfo = new PkupInfo()
             {
                 Details = commits.Select(x => new WorkDetail()
@@ -67,9 +53,11 @@ namespace Pkup.Console.Report
                     Description = x.Message,
                     Url = x.Url
                 }).ToList(),
-                Tokens = replaceTokens,
+                Tokens = tokens,
+                FromDate = fromDate,
+                ToDate = toDate,
             };
-            var bytes = _pkupReportService.GeneratePkupReport(templatePath, pkupInfo);
+            var bytes = _pkupReportService.GeneratePkupReport(templatePath, defaultDateFormat, pkupInfo);
             File.WriteAllBytes(reportPath, bytes);
             _logger.LogInformation("Report can be found at: {ReportPath}", reportPath);
         }

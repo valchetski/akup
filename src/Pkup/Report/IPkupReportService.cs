@@ -2,6 +2,6 @@
 {
     public interface IPkupReportService
     {
-        byte[] GeneratePkupReport(string templatePath, PkupInfo pkupInfo);
+        byte[] GeneratePkupReport(string templatePath, string defaultDateFormat, PkupInfo pkupInfo);
     }
 }

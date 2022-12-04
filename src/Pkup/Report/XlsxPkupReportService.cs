@@ -1,5 +1,5 @@
 ﻿using OfficeOpenXml;
-using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Pkup.Report
 {
@@ -10,7 +10,7 @@ namespace Pkup.Report
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
-        public byte[] GeneratePkupReport(string templatePath, PkupInfo pkupInfo)
+        public byte[] GeneratePkupReport(string templatePath, string defaultDateFormat, PkupInfo pkupInfo)
         {
             var fileinfo = new FileInfo(templatePath);
             if (!fileinfo.Exists )
@@ -55,26 +55,65 @@ namespace Pkup.Report
                     }
                 }
 
-                if (pkupInfo.Tokens != null)
-                {
-                    foreach (var tokenKeyValue in pkupInfo.Tokens)
-                    {
-                        var token = $"{{{tokenKeyValue.Key}}}";
-                        var cellsWithToken = worksheet.Cells
-                            .Where(x => x.GetValue<string>() != null && x.GetValue<string>().Contains(token))
-                            .ToArray();
-                        foreach (var cellWithToken in cellsWithToken)
-                        {
-                            cellWithToken.Value = cellWithToken.GetValue<string>().Replace(token, tokenKeyValue.Value);
-                        }
-                    }
-                    
-                }
+                ReplaceTokens(worksheet, pkupInfo, defaultDateFormat);
 
                 excelPackage.SaveAs(outputStream);
             }
 
             return outputStream.ToArray();
+        }
+
+        private static void ReplaceTokens(ExcelWorksheet worksheet, PkupInfo pkupInfo, string defaultDateFormat)
+        {
+            if (pkupInfo.Tokens != null)
+            {
+                foreach (var tokenKeyValue in pkupInfo.Tokens)
+                {
+                    var token = $"{{{tokenKeyValue.Key}}}";
+                    var cellsWithToken = worksheet.Cells
+                        .Where(x => x.GetValue<string>() != null && x.GetValue<string>().Contains(token))
+                        .ToArray();
+                    foreach (var cellWithToken in cellsWithToken)
+                    {
+                        cellWithToken.Value = cellWithToken.GetValue<string>().Replace(token, tokenKeyValue.Value);
+                    }
+                }
+            }
+
+            ReplaceDateTokens(worksheet, pkupInfo, defaultDateFormat);
+        }
+
+        private static void ReplaceDateTokens(ExcelWorksheet worksheet, PkupInfo pkupInfo, string defaultDateFormat)
+        {
+            ReplaceDateToken(worksheet, "StartDate", pkupInfo.FromDate, defaultDateFormat);
+
+            ReplaceDateToken(worksheet, "EndDate", pkupInfo.ToDate, defaultDateFormat);
+        }
+
+        private static void ReplaceDateToken(ExcelWorksheet worksheet, string dateTokenName, DateTimeOffset? date, string defaultDateFormat)
+        {
+            if (date == null)
+            {
+                return;
+            }
+
+            var groupName = "format";
+            var dateToken = @$"{{{dateTokenName}:?(?<{groupName}>[^}}]*)}}";
+            var cellsWithToken = worksheet.Cells
+                        .Where(x => x.GetValue<string>() != null && Regex.IsMatch(x.GetValue<string>(), dateToken))
+                        .ToArray();
+            foreach (var cellWithToken in cellsWithToken)
+            {
+                var cellValue = cellWithToken.GetValue<string>();
+                var match = Regex.Match(cellValue, dateToken);
+                var dateFormat = match.Groups[groupName].Value;
+                if(string.IsNullOrEmpty(dateFormat))
+                {
+                    dateFormat = defaultDateFormat;
+                }
+
+                cellWithToken.Value = cellWithToken.GetValue<string>().Replace(match.Value, date.Value.ToString(dateFormat));
+            }
         }
     }
 }
