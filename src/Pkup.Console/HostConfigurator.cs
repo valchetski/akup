@@ -2,9 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OfficeOpenXml;
 using Pkup.Console.Report;
 using Pkup.Git;
 using Pkup.Report;
+using Pkup.Report.Tokens;
 
 namespace Pkup.Console
 {
@@ -32,6 +34,8 @@ namespace Pkup.Console
             services
                 .AddSingleton<IGitRepositoryService, GitRepositoryService>()
                 .AddSingleton<IGitReportService, GitReportService>()
+                .AddSingleton<ITokensService<ExcelWorksheet>, XlsxTokensService>()
+                .AddSingleton<ITokensService<string>, StringTokensService>()
                 .AddSingleton<IPkupReportService, XlsxPkupReportService>()
                 .AddSingleton<IReportService, ReportService>();
 

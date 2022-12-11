@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Pkup.Git;
 using Pkup.Report;
+using Pkup.Report.Tokens;
 
 namespace Pkup.Console.Report
 {
@@ -9,17 +10,20 @@ namespace Pkup.Console.Report
         private readonly IGitRepositoryService _gitRepositoryService;
         private readonly IGitReportService _gitReportService;
         private readonly IPkupReportService _pkupReportService;
+        private readonly ITokensService<string> _tokensService;
         private readonly ILogger _logger;
 
         public ReportService(
             IGitRepositoryService gitRepositoryService,
             IGitReportService gitReportService,
             IPkupReportService pkupReportService,
+            ITokensService<string> tokensService,
             ILogger<ReportService> logger)
         {
             _gitRepositoryService = gitRepositoryService;
             _gitReportService = gitReportService;
             _pkupReportService = pkupReportService;
+            _tokensService = tokensService;
             _logger = logger;
         }
 
@@ -58,7 +62,8 @@ namespace Pkup.Console.Report
                 ToDate = toDate,
             };
             var bytes = _pkupReportService.GeneratePkupReport(templatePath, defaultDateFormat, pkupInfo);
-            File.WriteAllBytes(reportPath, bytes);
+            var savePath = _tokensService.ReplaceTokens(reportPath, pkupInfo, defaultDateFormat);
+            File.WriteAllBytes(savePath, bytes);
             _logger.LogInformation("Report can be found at: {ReportPath}", reportPath);
         }
     }

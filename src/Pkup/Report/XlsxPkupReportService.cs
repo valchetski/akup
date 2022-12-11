@@ -1,13 +1,20 @@
 ﻿using OfficeOpenXml;
-using System.Text.RegularExpressions;
+using Pkup.Report.Tokens;
 
 namespace Pkup.Report
 {
     public class XlsxPkupReportService : IPkupReportService
     {
+        private readonly ITokensService<ExcelWorksheet> _tokensService;
+
         static XlsxPkupReportService()
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        }
+
+        public XlsxPkupReportService(ITokensService<ExcelWorksheet> tokensService)
+        {
+            _tokensService = tokensService;
         }
 
         public byte[] GeneratePkupReport(string templatePath, string defaultDateFormat, PkupInfo pkupInfo)
@@ -55,65 +62,12 @@ namespace Pkup.Report
                     }
                 }
 
-                ReplaceTokens(worksheet, pkupInfo, defaultDateFormat);
+                _tokensService.ReplaceTokens(worksheet, pkupInfo, defaultDateFormat);
 
                 excelPackage.SaveAs(outputStream);
             }
 
             return outputStream.ToArray();
-        }
-
-        private static void ReplaceTokens(ExcelWorksheet worksheet, PkupInfo pkupInfo, string defaultDateFormat)
-        {
-            if (pkupInfo.Tokens != null)
-            {
-                foreach (var tokenKeyValue in pkupInfo.Tokens)
-                {
-                    var token = $"{{{tokenKeyValue.Key}}}";
-                    var cellsWithToken = worksheet.Cells
-                        .Where(x => x.GetValue<string>() != null && x.GetValue<string>().Contains(token))
-                        .ToArray();
-                    foreach (var cellWithToken in cellsWithToken)
-                    {
-                        cellWithToken.Value = cellWithToken.GetValue<string>().Replace(token, tokenKeyValue.Value);
-                    }
-                }
-            }
-
-            ReplaceDateTokens(worksheet, pkupInfo, defaultDateFormat);
-        }
-
-        private static void ReplaceDateTokens(ExcelWorksheet worksheet, PkupInfo pkupInfo, string defaultDateFormat)
-        {
-            ReplaceDateToken(worksheet, "StartDate", pkupInfo.FromDate, defaultDateFormat);
-
-            ReplaceDateToken(worksheet, "EndDate", pkupInfo.ToDate, defaultDateFormat);
-        }
-
-        private static void ReplaceDateToken(ExcelWorksheet worksheet, string dateTokenName, DateTimeOffset? date, string defaultDateFormat)
-        {
-            if (date == null)
-            {
-                return;
-            }
-
-            var groupName = "format";
-            var dateToken = @$"{{{dateTokenName}:?(?<{groupName}>[^}}]*)}}";
-            var cellsWithToken = worksheet.Cells
-                        .Where(x => x.GetValue<string>() != null && Regex.IsMatch(x.GetValue<string>(), dateToken))
-                        .ToArray();
-            foreach (var cellWithToken in cellsWithToken)
-            {
-                var cellValue = cellWithToken.GetValue<string>();
-                var match = Regex.Match(cellValue, dateToken);
-                var dateFormat = match.Groups[groupName].Value;
-                if(string.IsNullOrEmpty(dateFormat))
-                {
-                    dateFormat = defaultDateFormat;
-                }
-
-                cellWithToken.Value = cellWithToken.GetValue<string>().Replace(match.Value, date.Value.ToString(dateFormat));
-            }
         }
     }
 }
