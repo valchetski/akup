@@ -69,7 +69,7 @@ namespace Pkup.Console.Report
             var bytes = _pkupReportService.GeneratePkupReport(templatePath, defaultDateFormat, pkupInfo);
             var savePath = _tokensService.ReplaceTokens(reportPath, pkupInfo, defaultDateFormat);
             File.WriteAllBytes(savePath, bytes);
-            _logger.LogInformation("Report can be found at: {ReportPath}", reportPath);
+            _logger.LogInformation("Report can be found at: {ReportPath}", savePath);
         }
     }
 }
