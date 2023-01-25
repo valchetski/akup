@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pkup.Console;
 using Pkup.Console.Report;
@@ -8,12 +9,24 @@ namespace PKUP
 {
     public static class Program
     {
-        static void Main()
+        static int Main()
         {
-            GenerateReport(GetServices());
+            var exitCode = 0;
+            var services = GetServices();
+            var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(Program));
+            try
+            {
+                GenerateReport(services);
+            }
+            catch(Exception ex)
+            {
+                logger.LogCritical(ex, "Unhandled exception occured");
+                exitCode = 1;
+            }
 
-            Console.WriteLine($"Press any key to exit...");
+            logger.LogInformation("Press any key to exit...");
             Console.ReadKey();
+            return exitCode;
         }
 
         public static IServiceProvider GetServices(Func<IHostBuilder, IHostBuilder>? customize = null)

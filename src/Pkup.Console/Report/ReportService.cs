@@ -38,6 +38,11 @@ namespace Pkup.Console.Report
             string defaultDateFormat,
             Dictionary<string, string> tokens)
         {
+            if (fromDate > toDate)
+            {
+                throw new ReportException($"{nameof(fromDate)} cannot be greater then {nameof(toDate)}");
+            }
+
             _logger.LogInformation("Looking for Git repositories");
             var repositoriesPaths = _gitRepositoryService.GetRepositories(repositoriesSources);
             if (!repositoriesPaths.Any())
