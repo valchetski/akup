@@ -16,8 +16,10 @@ namespace Pkup.Console.Tests.Report
         public void Report_FromDateIsAfterToDate_ShouldThrowException()
         {
             // arrange
+            var config = new PkupConfig(string.Empty, DateTimeOffset.Now.AddDays(1), DateTimeOffset.Now, string.Empty, string.Empty, null, null, Array.Empty<ProjectConfig>());
+
             // act
-            Action act = () => _reportService.Report(null, null, DateTimeOffset.Now.AddDays(1), DateTimeOffset.Now, null, null, null, null, null);
+            Action act = () => _reportService.Report(config);
 
             // assert
             act.Should().ThrowExactly<ReportException>();

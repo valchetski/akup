@@ -27,47 +27,74 @@ namespace Pkup.Console.Report
             _logger = logger;
         }
 
-        public void Report(
-            string[] repositoriesSources,
-            string authorName,
-            DateTimeOffset? fromDate,
-            DateTimeOffset? toDate,
-            string projectName,
-            string templatePath,
-            string reportPath,
-            string defaultDateFormat,
-            Dictionary<string, string> tokens)
+        public void Report(PkupConfig config)
         {
-            if (fromDate > toDate)
+            if (config == null)
             {
-                throw new ReportException($"{nameof(fromDate)} cannot be greater then {nameof(toDate)}");
+                throw new ArgumentNullException(nameof(config));
             }
 
-            _logger.LogInformation("Looking for Git repositories");
-            var repositoriesPaths = _gitRepositoryService.GetRepositories(repositoriesSources);
-            if (!repositoriesPaths.Any())
+            if(config.Projects == null)
             {
-                throw new FileNotFoundException($"No Git repositories found at {string.Join(", ", repositoriesSources) }");
+                throw new ArgumentNullException(nameof(config), nameof(config.Projects));
             }
 
-            _logger.LogInformation("Searching commits");
-            var commits = _gitReportService.GetCommits(repositoriesPaths, authorName, fromDate, toDate);
+            if (config.AuthorName == null)
+            {
+                throw new ArgumentNullException(nameof(config), nameof(config.AuthorName));
+            }
+
+            if (config.TemplatePath == null)
+            {
+                throw new ArgumentNullException(nameof(config), nameof(config.TemplatePath));
+            }
+
+            if (config.ReportPath == null)
+            {
+                throw new ArgumentNullException(nameof(config), nameof(config.ReportPath));
+            }
+
+            if (config.FromDate > config.ToDate)
+            {
+                throw new ReportException($"{nameof(config.FromDate)} cannot be greater then {nameof(config.ToDate)}");
+            }
+
+            var workDetails = new List<WorkDetail>();
+            foreach (var projectConfig in config.Projects)
+            {
+                _logger.LogInformation("Looking for Git repositories of {ProjectName} project", projectConfig.ProjectName);
+                if(projectConfig.RepositoriesSources == null)
+                {
+                    throw new ReportException($"{nameof(projectConfig.RepositoriesSources)} are not set");
+                }
+
+                var repositoriesPaths = _gitRepositoryService.GetRepositories(projectConfig.RepositoriesSources);
+                if (!repositoriesPaths.Any())
+                {
+                    throw new FileNotFoundException($"No Git repositories found at {string.Join(", ", projectConfig.RepositoriesSources)}");
+                }
+
+                _logger.LogInformation("Searching commits in Get repositories of {ProjectName} project", projectConfig.ProjectName);
+                var commits = _gitReportService.GetCommits(repositoriesPaths, config.AuthorName, config.FromDate, config.ToDate);
+
+                workDetails.AddRange(commits.Select(x => new WorkDetail()
+                {
+                    ProjectName = projectConfig.ProjectName,
+                    Description = x.Message,
+                    Url = x.Url
+                }));
+            }
 
             _logger.LogInformation("Generating report");
             var pkupInfo = new PkupInfo()
             {
-                Details = commits.Select(x => new WorkDetail()
-                {
-                    ProjectName = projectName,
-                    Description = x.Message,
-                    Url = x.Url
-                }).ToList(),
-                Tokens = tokens,
-                FromDate = fromDate,
-                ToDate = toDate,
+                Details = workDetails,
+                Tokens = config.Tokens,
+                FromDate = config.FromDate,
+                ToDate = config.ToDate,
             };
-            var bytes = _pkupReportService.GeneratePkupReport(templatePath, defaultDateFormat, pkupInfo);
-            var savePath = _tokensService.ReplaceTokens(reportPath, pkupInfo, defaultDateFormat);
+            var bytes = _pkupReportService.GeneratePkupReport(config.TemplatePath, config.DefaultDateFormat, pkupInfo);
+            var savePath = _tokensService.ReplaceTokens(config.ReportPath, pkupInfo, config.DefaultDateFormat);
             File.WriteAllBytes(savePath, bytes);
             _logger.LogInformation("Report can be found at: {ReportPath}", savePath);
         }

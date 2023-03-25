@@ -39,12 +39,7 @@ namespace Pkup.Console
                 .AddSingleton<IPkupReportService, XlsxPkupReportService>()
                 .AddSingleton<IReportService, ReportService>();
 
-            services
-                .AddOptions<PkupConfig>()
-                .Bind(context.Configuration)
-                .Validate(x => x.RepositoriesSources != null, $"\"{nameof(PkupConfig.RepositoriesSources)}\" config is not set")
-                .Validate(x => x.TemplatePath != null, $"\"{nameof(PkupConfig.TemplatePath)}\" config is not set")
-                .Validate(x => x.ReportPath != null, $"\"{nameof(PkupConfig.ReportPath)}\" config is not set");
+            services.Configure<PkupConfig>(context.Configuration);
         }
     }
 }

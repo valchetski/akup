@@ -45,16 +45,7 @@ namespace PKUP
         {
             var reportService = serviceProvider.GetRequiredService<IReportService>();
             var reportConfig = serviceProvider.GetRequiredService<IOptions<PkupConfig>>().Value;
-            reportService.Report(
-                reportConfig.RepositoriesSources!,
-                reportConfig.AuthorName!,
-                reportConfig.FromDate,
-                reportConfig.ToDate,
-                reportConfig.ProjectName!,
-                reportConfig.TemplatePath!,
-                reportConfig.ReportPath!,
-                reportConfig.DefaultDateFormat,
-                reportConfig.Tokens!);
+            reportService.Report(reportConfig);
         }
     }
 }
