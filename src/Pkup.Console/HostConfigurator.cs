@@ -39,20 +39,12 @@ namespace Pkup.Console
                 .AddSingleton<IPkupReportService, XlsxPkupReportService>()
                 .AddSingleton<IReportService, ReportService>();
 
-            var gitConfigSectionName = "Git";
             services
-                .AddOptions<GitConfig>()
-                .Bind(context.Configuration.GetSection(gitConfigSectionName))
-                .Validate(x => x != null, $"\"{gitConfigSectionName}\" config is not specified")
-                .Validate(x => x.RepositoriesSources != null, $"\"{gitConfigSectionName}:{nameof(GitConfig.RepositoriesSources)}\" config is not set");
-
-            var reportConfigSectionName = "Report";
-            services
-                .AddOptions<ReportConfig>()
-                .Bind(context.Configuration.GetSection(reportConfigSectionName))
-                .Validate(x => x != null, $"\"{reportConfigSectionName}\" config is not specified")
-                .Validate(x => x.TemplatePath != null, $"\"{reportConfigSectionName}:{nameof(ReportConfig.TemplatePath)}\" config is not set")
-                .Validate(x => x.ReportPath != null, $"\"{reportConfigSectionName}:{nameof(ReportConfig.ReportPath)}\" config is not set");
+                .AddOptions<PkupConfig>()
+                .Bind(context.Configuration)
+                .Validate(x => x.RepositoriesSources != null, $"\"{nameof(PkupConfig.RepositoriesSources)}\" config is not set")
+                .Validate(x => x.TemplatePath != null, $"\"{nameof(PkupConfig.TemplatePath)}\" config is not set")
+                .Validate(x => x.ReportPath != null, $"\"{nameof(PkupConfig.ReportPath)}\" config is not set");
         }
     }
 }

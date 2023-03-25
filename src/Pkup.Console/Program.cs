@@ -44,13 +44,12 @@ namespace PKUP
         public static void GenerateReport(IServiceProvider serviceProvider)
         {
             var reportService = serviceProvider.GetRequiredService<IReportService>();
-            var gitConfig = serviceProvider.GetRequiredService<IOptions<GitConfig>>().Value;
-            var reportConfig = serviceProvider.GetRequiredService<IOptions<ReportConfig>>().Value;
+            var reportConfig = serviceProvider.GetRequiredService<IOptions<PkupConfig>>().Value;
             reportService.Report(
-                gitConfig.RepositoriesSources!,
-                gitConfig.AuthorName!,
-                gitConfig.FromDate,
-                gitConfig.ToDate,
+                reportConfig.RepositoriesSources!,
+                reportConfig.AuthorName!,
+                reportConfig.FromDate,
+                reportConfig.ToDate,
                 reportConfig.ProjectName!,
                 reportConfig.TemplatePath!,
                 reportConfig.ReportPath!,
