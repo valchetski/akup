@@ -2,7 +2,10 @@
 {
     public class PkupConfig
     {
-        public PkupConfig() { }
+        public PkupConfig()
+            : this(null, null, null, null, null, null, null)
+        {
+        }
 
         public PkupConfig(
             string? authorName,
@@ -10,9 +13,9 @@
             DateTimeOffset? toDate,
             string? templatePath,
             string? reportPath,
-            string defaultDateFormat,
             Dictionary<string, string>? tokens,
-            ProjectConfig[]? projects)
+            ProjectConfig[]? projects,
+            string defaultDateFormat = "dd MMMM")
         {
             AuthorName = authorName;
             FromDate = fromDate;
@@ -34,7 +37,7 @@
 
         public string? ReportPath { get; set; }
 
-        public string DefaultDateFormat { get; set; } = "dd MMMM";
+        public string DefaultDateFormat { get; set; }
 
         public Dictionary<string, string>? Tokens { get; set; }
 

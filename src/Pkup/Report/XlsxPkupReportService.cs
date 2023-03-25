@@ -20,7 +20,7 @@ namespace Pkup.Report
         public byte[] GeneratePkupReport(string templatePath, string defaultDateFormat, PkupInfo pkupInfo)
         {
             var fileinfo = new FileInfo(templatePath);
-            if (!fileinfo.Exists )
+            if (!fileinfo.Exists)
             {
                 throw new FileNotFoundException(templatePath, templatePath);
             }
@@ -54,6 +54,7 @@ namespace Pkup.Report
                         {
                             descriptionCell.Hyperlink = new Uri(workDetail.Url);
                         }
+
                         descriptionCell.Value = workDetail.Description;
 
                         worksheet.Row(rowIndex).CustomHeight = false;

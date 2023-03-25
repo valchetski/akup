@@ -33,6 +33,7 @@ namespace Pkup.Git
             {
                 repositoriesPaths.AddRange(Directory.GetDirectories(repositoryPath, ".git", SearchOption.AllDirectories));
             }
+
             return repositoriesPaths.ToArray();
         }
     }

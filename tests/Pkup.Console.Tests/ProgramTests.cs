@@ -11,8 +11,10 @@ namespace Pkup.Console.Tests
         public void Program_Should_GenerateReport()
         {
             // arrange
-            var services = Program.GetServices(hb => hb
-                .ConfigureAppConfiguration(x => x.AddJsonFile("appsettings.tests.json")));
+            var services = Program
+                .CreateHostBuilder()
+                .ConfigureAppConfiguration(config => config.AddJsonFile("appsettings.tests.json"))
+                .Build().Services;
 
             // act
             Action act = () => Program.GenerateReport(services);

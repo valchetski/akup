@@ -34,7 +34,7 @@ namespace Pkup.Console.Report
                 throw new ArgumentNullException(nameof(config));
             }
 
-            if(config.Projects == null)
+            if (config.Projects == null)
             {
                 throw new ArgumentNullException(nameof(config), nameof(config.Projects));
             }
@@ -63,7 +63,7 @@ namespace Pkup.Console.Report
             foreach (var projectConfig in config.Projects)
             {
                 _logger.LogInformation("Looking for Git repositories of {ProjectName} project", projectConfig.ProjectName);
-                if(projectConfig.RepositoriesSources == null)
+                if (projectConfig.RepositoriesSources == null)
                 {
                     throw new ReportException($"{nameof(projectConfig.RepositoriesSources)} are not set");
                 }
@@ -81,7 +81,7 @@ namespace Pkup.Console.Report
                 {
                     ProjectName = projectConfig.ProjectName,
                     Description = x.Message,
-                    Url = x.Url
+                    Url = x.Url,
                 }));
             }
 

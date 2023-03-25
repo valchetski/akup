@@ -24,9 +24,10 @@ namespace Pkup.Git
                     {
                         Date = x.Author.When,
                         Message = x.Message,
-                        Url = GetCommitUrl(repo, x)
+                        Url = GetCommitUrl(repo, x),
                     }));
             }
+
             return commits.OrderBy(x => x.Date).ToArray();
         }
 
