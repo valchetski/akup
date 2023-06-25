@@ -9,14 +9,22 @@ namespace Pkup.Console.Tests.Report
 
         public ReportServiceTests()
         {
-            _reportService = new ReportService(null, null, null, null, null);
+            _reportService = new ReportService(null, null, null, null);
         }
 
         [Fact]
         public void Report_FromDateIsAfterToDate_ShouldThrowException()
         {
             // arrange
-            var config = new PkupConfig(string.Empty, DateTimeOffset.Now.AddDays(1), DateTimeOffset.Now, string.Empty, string.Empty, null, Array.Empty<ProjectConfig>());
+            var config = new PkupConfig()
+            {
+                FromDate = DateTimeOffset.Now.AddDays(1),
+                ToDate = DateTimeOffset.Now,
+                AuthorName = string.Empty,
+                TemplatePath = string.Empty,
+                ReportPath = string.Empty,
+                Projects = Array.Empty<ProjectConfig>(),
+            };
 
             // act
             Action act = () => _reportService.Report(config);

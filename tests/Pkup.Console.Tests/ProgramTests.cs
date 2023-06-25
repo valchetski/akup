@@ -11,16 +11,28 @@ namespace Pkup.Console.Tests
         public void Program_Should_GenerateReport()
         {
             // arrange
-            var services = Program
-                .CreateHostBuilder()
-                .ConfigureAppConfiguration(config => config.AddJsonFile("appsettings.tests.json"))
-                .Build().Services;
+            var services = GetServices();
 
             // act
             Action act = () => Program.GenerateReport(services);
 
             // assert
             act.Should().NotThrow();
+        }
+
+        private IServiceProvider GetServices(Dictionary<string, string> configOverride = null)
+        {
+            return Program
+                .CreateHostBuilder()
+                .ConfigureAppConfiguration(config =>
+                {
+                    config.AddJsonFile("appsettings.tests.json");
+                    if (configOverride != null)
+                    {
+                        config.AddInMemoryCollection(configOverride);
+                    }
+                })
+                .Build().Services;
         }
     }
 }

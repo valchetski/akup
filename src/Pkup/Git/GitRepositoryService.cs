@@ -1,40 +1,45 @@
-﻿using LibGit2Sharp;
-
-namespace Pkup.Git
+﻿namespace Pkup.Git
 {
     public class GitRepositoryService : IGitRepositoryService
     {
-        public Commit[] FindCommits(Repository repo, string? authorName = default, DateTimeOffset? from = default, DateTimeOffset? to = default)
+        private readonly Dictionary<RepositorySource, IGitRepositoryProvider> _providers;
+
+        public GitRepositoryService(Dictionary<RepositorySource, IGitRepositoryProvider> providers)
         {
-            var query = repo.Commits.AsEnumerable();
-
-            if (!string.IsNullOrEmpty(authorName))
-            {
-                query = query.Where(x => x.Author.Name == authorName);
-            }
-
-            if (from != default)
-            {
-                query = query.Where(x => x.Author.When >= from);
-            }
-
-            if (to != default)
-            {
-                query = query.Where(x => x.Author.When <= to);
-            }
-
-            return query.ToArray();
+            _providers = providers;
         }
 
-        public string[] GetRepositories(params string[] searchLocations)
+        public string[] GetRepositoriesPaths(params string[] searchLocations)
         {
             var repositoriesPaths = new List<string>();
-            foreach (var repositoryPath in searchLocations)
+            foreach (var searchLocation in searchLocations)
             {
-                repositoriesPaths.AddRange(Directory.GetDirectories(repositoryPath, ".git", SearchOption.AllDirectories));
+                repositoriesPaths.AddRange(GetProvider(searchLocation).GetRepositoriesPaths(searchLocation));
             }
 
             return repositoriesPaths.ToArray();
+        }
+
+        public CommitInfo[] GetCommits(string[] repositoriesPaths, string authorName, DateTimeOffset? fromDate, DateTimeOffset? toDate)
+        {
+            var commits = new List<CommitInfo>();
+            foreach (var repositoryPath in repositoriesPaths)
+            {
+                commits.AddRange(GetProvider(repositoryPath).GetCommits(repositoryPath, authorName, fromDate, toDate));
+            }
+
+            return commits.OrderBy(x => x.Date).ToArray();
+        }
+
+        private IGitRepositoryProvider GetProvider(string location)
+        {
+            RepositorySource repositorySource = RepositorySource.Local;
+            if (location.StartsWith("https://github.com"))
+            {
+                repositorySource = RepositorySource.GitHub;
+            }
+
+            return _providers[repositorySource];
         }
     }
 }

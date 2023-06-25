@@ -56,8 +56,12 @@ namespace PKUP
                 .ConfigureServices((context, services) =>
                     services
                         .Configure<PkupConfig>(context.Configuration)
-                        .AddSingleton<IGitRepositoryService, GitRepositoryService>()
-                        .AddSingleton<IGitReportService, GitReportService>()
+                        .AddSingleton<LocalGitRepositoryProvider>()
+                        .AddSingleton<IGitRepositoryService>(sp => new GitRepositoryService(
+                            new Dictionary<RepositorySource, IGitRepositoryProvider>()
+                            {
+                                { RepositorySource.Local, sp.GetRequiredService<LocalGitRepositoryProvider>() },
+                            }))
                         .AddSingleton<ITokensService<ExcelWorksheet>, XlsxTokensService>()
                         .AddSingleton<ITokensService<string>, StringTokensService>()
                         .AddSingleton<IPkupReportService, XlsxPkupReportService>()

@@ -8,20 +8,17 @@ namespace Pkup.Console.Report
     public class ReportService : IReportService
     {
         private readonly IGitRepositoryService _gitRepositoryService;
-        private readonly IGitReportService _gitReportService;
         private readonly IPkupReportService _pkupReportService;
         private readonly ITokensService<string> _tokensService;
         private readonly ILogger _logger;
 
         public ReportService(
             IGitRepositoryService gitRepositoryService,
-            IGitReportService gitReportService,
             IPkupReportService pkupReportService,
             ITokensService<string> tokensService,
             ILogger<ReportService> logger)
         {
             _gitRepositoryService = gitRepositoryService;
-            _gitReportService = gitReportService;
             _pkupReportService = pkupReportService;
             _tokensService = tokensService;
             _logger = logger;
@@ -68,14 +65,14 @@ namespace Pkup.Console.Report
                     throw new ReportException($"{nameof(projectConfig.RepositoriesSources)} are not set");
                 }
 
-                var repositoriesPaths = _gitRepositoryService.GetRepositories(projectConfig.RepositoriesSources);
+                var repositoriesPaths = _gitRepositoryService.GetRepositoriesPaths(projectConfig.RepositoriesSources);
                 if (!repositoriesPaths.Any())
                 {
                     throw new FileNotFoundException($"No Git repositories found at {string.Join(", ", projectConfig.RepositoriesSources)}");
                 }
 
-                _logger.LogInformation("Searching commits in Get repositories of {ProjectName} project", projectConfig.ProjectName);
-                var commits = _gitReportService.GetCommits(repositoriesPaths, config.AuthorName, config.FromDate, config.ToDate);
+                _logger.LogInformation("Searching commits in Git repositories of {ProjectName} project", projectConfig.ProjectName);
+                var commits = _gitRepositoryService.GetCommits(repositoriesPaths, config.AuthorName, config.FromDate, config.ToDate);
 
                 workDetails.AddRange(commits.Select(x => new WorkDetail()
                 {
