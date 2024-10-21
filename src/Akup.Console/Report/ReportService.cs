@@ -92,6 +92,11 @@ namespace Akup.Console.Report
             };
             var bytes = _akupReportService.GenerateAkupReport(config.TemplatePath, config.DefaultDateFormat, akupInfo);
             var savePath = _tokensService.ReplaceTokens(config.ReportPath, akupInfo, config.DefaultDateFormat);
+            if (!Path.IsPathRooted(savePath))
+            {
+                savePath = Path.GetFullPath(savePath, AppDomain.CurrentDomain.BaseDirectory);
+            }
+
             File.WriteAllBytes(savePath, bytes);
             _logger.LogInformation("Report can be found at: {ReportPath}", savePath);
         }
