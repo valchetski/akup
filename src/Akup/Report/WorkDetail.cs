@@ -1,11 +1,10 @@
-﻿namespace Akup.Report
+﻿namespace Akup.Report;
+
+public class WorkDetail
 {
-    public class WorkDetail
-    {
-        public string? ProjectName { get; set; }
+    public string? ProjectName { get; set; }
 
-        public string? Description { get; set; }
+    public string? Description { get; set; }
 
-        public string? Url { get; set; }
-    }
+    public string? Url { get; set; }
 }

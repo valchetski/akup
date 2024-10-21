@@ -9,61 +9,60 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OfficeOpenXml;
 
-namespace Akup.Console
+namespace Akup.Console;
+
+public static class Program
 {
-    public static class Program
+    public static int Main()
     {
-        public static int Main()
+        var exitCode = 0;
+        var services = CreateHostBuilder().Build().Services;
+        var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(Program));
+        try
         {
-            var exitCode = 0;
-            var services = CreateHostBuilder().Build().Services;
-            var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(Program));
-            try
-            {
-                GenerateReport(services);
-            }
-            catch (Exception ex)
-            {
-                logger.LogCritical(ex, "Unhandled exception occured");
-                exitCode = 1;
-            }
-
-            return exitCode;
+            GenerateReport(services);
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex, "Unhandled exception occured");
+            exitCode = 1;
         }
 
-        public static void GenerateReport(IServiceProvider serviceProvider)
-        {
-            var reportService = serviceProvider.GetRequiredService<IReportService>();
-            var reportConfig = serviceProvider.GetRequiredService<IOptions<ReportConfig>>().Value;
-            reportService.Report(reportConfig);
-        }
+        return exitCode;
+    }
 
-        public static IHostBuilder CreateHostBuilder()
-        {
-            return new HostBuilder()
-                .ConfigureAppConfiguration(
-                    x => x.SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: false)
-                    .AddJsonFile("appsettings.json.user", optional: true))
-                .ConfigureLogging(
-                    x => x.AddSimpleConsole(o =>
-                    {
-                        o.IncludeScopes = true;
-                        o.SingleLine = true;
-                    }))
-                .ConfigureServices((context, services) =>
-                    services
-                        .Configure<ReportConfig>(context.Configuration)
-                        .AddSingleton<LocalGitRepositoryProvider>()
-                        .AddSingleton<IGitRepositoryService>(sp => new GitRepositoryService(
-                            new Dictionary<RepositorySource, IGitRepositoryProvider>()
-                            {
-                                { RepositorySource.Local, sp.GetRequiredService<LocalGitRepositoryProvider>() },
-                            }))
-                        .AddSingleton<ITokensService<ExcelWorksheet>, XlsxTokensService>()
-                        .AddSingleton<ITokensService<string>, StringTokensService>()
-                        .AddSingleton<IAkupReportService, XlsxAkupReportService>()
-                        .AddSingleton<IReportService, ReportService>());
-        }
+    public static void GenerateReport(IServiceProvider serviceProvider)
+    {
+        var reportService = serviceProvider.GetRequiredService<IReportService>();
+        var reportConfig = serviceProvider.GetRequiredService<IOptions<ReportConfig>>().Value;
+        reportService.Report(reportConfig);
+    }
+
+    public static IHostBuilder CreateHostBuilder()
+    {
+        return new HostBuilder()
+            .ConfigureAppConfiguration(
+                x => x.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile("appsettings.json.user", optional: true))
+            .ConfigureLogging(
+                x => x.AddSimpleConsole(o =>
+                {
+                    o.IncludeScopes = true;
+                    o.SingleLine = true;
+                }))
+            .ConfigureServices((context, services) =>
+                services
+                    .Configure<ReportConfig>(context.Configuration)
+                    .AddSingleton<LocalGitRepositoryProvider>()
+                    .AddSingleton<IGitRepositoryService>(sp => new GitRepositoryService(
+                        new Dictionary<RepositorySource, IGitRepositoryProvider>()
+                        {
+                            { RepositorySource.Local, sp.GetRequiredService<LocalGitRepositoryProvider>() },
+                        }))
+                    .AddSingleton<ITokensService<ExcelWorksheet>, XlsxTokensService>()
+                    .AddSingleton<ITokensService<string>, StringTokensService>()
+                    .AddSingleton<IAkupReportService, XlsxAkupReportService>()
+                    .AddSingleton<IReportService, ReportService>());
     }
 }

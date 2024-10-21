@@ -1,15 +1,14 @@
-﻿namespace Akup.Git
-{
-    public enum RepositorySource
-    {
-        /// <summary>
-        /// Repository from local filesystem. Default value.
-        /// </summary>
-        Local,
+﻿namespace Akup.Git;
 
-        /// <summary>
-        /// GitHub repository.
-        /// </summary>
-        GitHub,
-    }
+public enum RepositorySource
+{
+    /// <summary>
+    /// Repository from local filesystem. Default value.
+    /// </summary>
+    Local,
+
+    /// <summary>
+    /// GitHub repository.
+    /// </summary>
+    GitHub,
 }

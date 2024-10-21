@@ -1,11 +1,10 @@
-﻿namespace Akup.Git
+﻿namespace Akup.Git;
+
+public class CommitInfo
 {
-    public class CommitInfo
-    {
-        public string? Message { get; set; }
+    public string? Message { get; set; }
 
-        public DateTimeOffset? Date { get; set; }
+    public DateTimeOffset? Date { get; set; }
 
-        public string? Url { get; set; }
-    }
+    public string? Url { get; set; }
 }

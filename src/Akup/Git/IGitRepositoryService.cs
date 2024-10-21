@@ -1,9 +1,8 @@
-﻿namespace Akup.Git
-{
-    public interface IGitRepositoryService
-    {
-        CommitInfo[] GetCommits(string[] repositoriesPaths, string authorName, DateTimeOffset? fromDate, DateTimeOffset? toDate);
+﻿namespace Akup.Git;
 
-        string[] GetRepositoriesPaths(params string[] searchLocations);
-    }
+public interface IGitRepositoryService
+{
+    CommitInfo[] GetCommits(string[] repositoriesPaths, string authorName, DateTimeOffset? fromDate, DateTimeOffset? toDate);
+
+    string[] GetRepositoriesPaths(params string[] searchLocations);
 }

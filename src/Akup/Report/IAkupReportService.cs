@@ -1,7 +1,6 @@
-﻿namespace Akup.Report
+﻿namespace Akup.Report;
+
+public interface IAkupReportService
 {
-    public interface IAkupReportService
-    {
-        byte[] GenerateAkupReport(string templatePath, string defaultDateFormat, AkupInfo akupInfo);
-    }
+    byte[] GenerateAkupReport(string templatePath, string defaultDateFormat, AkupInfo akupInfo);
 }

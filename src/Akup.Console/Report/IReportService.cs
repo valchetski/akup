@@ -1,7 +1,6 @@
-﻿namespace Akup.Console.Report
+﻿namespace Akup.Console.Report;
+
+public interface IReportService
 {
-    public interface IReportService
-    {
-        void Report(ReportConfig config);
-    }
+    void Report(ReportConfig config);
 }
