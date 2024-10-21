@@ -5,31 +5,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Akup.Console.Report;
 
-public class ReportService : IReportService
+public class ReportService(
+    IGitRepositoryService gitRepositoryService,
+    IAkupReportService akupReportService,
+    ITokensService<string> tokensService,
+    ILogger<ReportService> logger) : IReportService
 {
-    private readonly IGitRepositoryService _gitRepositoryService;
-    private readonly IAkupReportService _akupReportService;
-    private readonly ITokensService<string> _tokensService;
-    private readonly ILogger _logger;
-
-    public ReportService(
-        IGitRepositoryService gitRepositoryService,
-        IAkupReportService akupReportService,
-        ITokensService<string> tokensService,
-        ILogger<ReportService> logger)
-    {
-        _gitRepositoryService = gitRepositoryService;
-        _akupReportService = akupReportService;
-        _tokensService = tokensService;
-        _logger = logger;
-    }
+    private readonly IGitRepositoryService _gitRepositoryService = gitRepositoryService;
+    private readonly IAkupReportService _akupReportService = akupReportService;
+    private readonly ITokensService<string> _tokensService = tokensService;
+    private readonly ILogger _logger = logger;
 
     public void Report(ReportConfig config)
     {
-        if (config == null)
-        {
-            throw new ArgumentNullException(nameof(config));
-        }
+        ArgumentNullException.ThrowIfNull(config);
 
         if (config.Projects == null)
         {
@@ -66,7 +55,7 @@ public class ReportService : IReportService
             }
 
             var repositoriesPaths = _gitRepositoryService.GetRepositoriesPaths(projectConfig.RepositoriesSources);
-            if (!repositoriesPaths.Any())
+            if (repositoriesPaths.Length == 0)
             {
                 throw new FileNotFoundException($"No Git repositories found at {string.Join(", ", projectConfig.RepositoriesSources)}");
             }

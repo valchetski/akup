@@ -3,18 +3,13 @@ using OfficeOpenXml;
 
 namespace Akup.Report;
 
-public class XlsxAkupReportService : IAkupReportService
+public class XlsxAkupReportService(ITokensService<ExcelWorksheet> tokensService) : IAkupReportService
 {
-    private readonly ITokensService<ExcelWorksheet> _tokensService;
+    private readonly ITokensService<ExcelWorksheet> _tokensService = tokensService;
 
     static XlsxAkupReportService()
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-    }
-
-    public XlsxAkupReportService(ITokensService<ExcelWorksheet> tokensService)
-    {
-        _tokensService = tokensService;
     }
 
     public byte[] GenerateAkupReport(string templatePath, string defaultDateFormat, AkupInfo akupInfo)

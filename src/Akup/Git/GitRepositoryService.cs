@@ -1,13 +1,8 @@
 ﻿namespace Akup.Git;
 
-public class GitRepositoryService : IGitRepositoryService
+public class GitRepositoryService(Dictionary<RepositorySource, IGitRepositoryProvider> providers) : IGitRepositoryService
 {
-    private readonly Dictionary<RepositorySource, IGitRepositoryProvider> _providers;
-
-    public GitRepositoryService(Dictionary<RepositorySource, IGitRepositoryProvider> providers)
-    {
-        _providers = providers;
-    }
+    private readonly Dictionary<RepositorySource, IGitRepositoryProvider> _providers = providers;
 
     public string[] GetRepositoriesPaths(params string[] searchLocations)
     {
@@ -17,7 +12,7 @@ public class GitRepositoryService : IGitRepositoryService
             repositoriesPaths.AddRange(GetProvider(searchLocation).GetRepositoriesPaths(searchLocation));
         }
 
-        return repositoriesPaths.ToArray();
+        return [.. repositoriesPaths];
     }
 
     public CommitInfo[] GetCommits(string[] repositoriesPaths, string authorName, DateTimeOffset? fromDate, DateTimeOffset? toDate)
@@ -28,7 +23,7 @@ public class GitRepositoryService : IGitRepositoryService
             commits.AddRange(GetProvider(repositoryPath).GetCommits(repositoryPath, authorName, fromDate, toDate));
         }
 
-        return commits.OrderBy(x => x.Date).ToArray();
+        return [.. commits.OrderBy(x => x.Date)];
     }
 
     private IGitRepositoryProvider GetProvider(string location)
