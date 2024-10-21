@@ -20,16 +20,17 @@ public abstract class TokensService<T> : ITokensService<T>
         return ReplaceDateTokens(data, akupInfo, defaultDateFormat);
     }
 
-    protected abstract T ReplaceTokenInternal(T data, string tokenKey, string tokenValue);
-
-    protected abstract T ReplaceDateTokenInternal(T data, string dateTokenKey, DateTimeOffset dateTokenValue, string defaultDateFormat);
-
-    protected string Replace(string data, string tokenKey, string tokenValue)
+    protected static string Replace(string data, string tokenKey, string tokenValue)
     {
         return data.Replace(tokenKey, tokenValue);
     }
 
-    protected string ReplaceDateToken(string data, string dateTokenKey, DateTimeOffset dateTokenValue, string defaultDateFormat)
+    protected static bool HasDateToken(string data, string dateTokenKey)
+    {
+        return data != null && Regex.IsMatch(data, dateTokenKey);
+    }
+
+    protected static string ReplaceDateToken(string data, string dateTokenKey, DateTimeOffset dateTokenValue, string defaultDateFormat)
     {
         var match = Regex.Match(data, dateTokenKey);
         var dateFormat = match.Groups[DateRegexGroupName].Value;
@@ -41,10 +42,9 @@ public abstract class TokensService<T> : ITokensService<T>
         return Replace(data, match.Value, dateTokenValue.ToString(dateFormat));
     }
 
-    protected bool HasDateToken(string data, string dateTokenKey)
-    {
-        return data != null && Regex.IsMatch(data, dateTokenKey);
-    }
+    protected abstract T ReplaceTokenInternal(T data, string tokenKey, string tokenValue);
+
+    protected abstract T ReplaceDateTokenInternal(T data, string dateTokenKey, DateTimeOffset dateTokenValue, string defaultDateFormat);
 
     private T ReplaceDateTokens(T data, AkupInfo akupInfo, string defaultDateFormat)
     {
