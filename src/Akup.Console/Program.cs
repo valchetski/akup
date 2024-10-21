@@ -38,13 +38,10 @@ public static class Program
         reportService.Report(reportConfig);
     }
 
-    public static IHostBuilder CreateHostBuilder()
+    public static IHostBuilder CreateHostBuilder(params string[] args)
     {
         return new HostBuilder()
-            .ConfigureAppConfiguration(
-                x => x.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false)
-                .AddJsonFile("appsettings.json.user", optional: true))
+            .ConfigureDefaults(args)
             .ConfigureLogging(
                 x => x.AddSimpleConsole(o =>
                 {

@@ -31,14 +31,14 @@
     <None Update="Data\akup_template.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="appsettings.json.user">
+    <None Include="appsettings.local.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>appsettings.json</DependentUpon>
     </None>
   </ItemGroup>
 
   <Target Name="CreateUserSettings" BeforeTargets="BeforeBuild;BeforeRebuild">
-    <Copy SourceFiles="appsettings.json" DestinationFiles="appsettings.json.user" Condition="!Exists('appsettings.json.user')" />
+    <Copy SourceFiles="appsettings.json" DestinationFiles="appsettings.local.json" Condition="!Exists('appsettings.local.json')" />
   </Target>
 
 </Project>

@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace Akup.Console.Tests;
@@ -19,18 +18,11 @@ public class ProgramTests
         act.Should().NotThrow();
     }
 
-    private static IServiceProvider GetServices(Dictionary<string, string> configOverride = null)
+    private static IServiceProvider GetServices()
     {
         return Program
             .CreateHostBuilder()
-            .ConfigureAppConfiguration(config =>
-            {
-                config.AddJsonFile("appsettings.tests.json");
-                if (configOverride != null)
-                {
-                    config.AddInMemoryCollection(configOverride);
-                }
-            })
+            .UseEnvironment("Tests")
             .Build().Services;
     }
 }
