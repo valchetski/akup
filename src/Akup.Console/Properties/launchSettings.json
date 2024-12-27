@@ -2,7 +2,7 @@
   "profiles": {
     "Akup.Console": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Local"
       },

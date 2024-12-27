@@ -57,9 +57,8 @@ public class LocalGitRepositoryProvider : IGitRepositoryProvider
         return repo.Network.Remotes.First().Url.Replace(".git", string.Empty).AppendPathSegments("commit", commit.Id);
     }
 
-    // TODO: Replace with library methods once one of these are completed
-    // https://github.com/libgit2/libgit2sharp/pull/2118
-    // https://github.com/libgit2/libgit2sharp/pull/2042
+    // TODO: Replace with library methods once this included in the next release
+    // https://github.com/libgit2/libgit2sharp/pull/2093
     // https://github.com/libgit2/libgit2sharp/issues/2036
     private static void DisableOwnershipCheckOpts()
     {
