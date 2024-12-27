@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Flurl;
+﻿using Flurl;
 using LibGit2Sharp;
 
 namespace Akup.Git;
@@ -8,7 +7,7 @@ public class LocalGitRepositoryProvider : IGitRepositoryProvider
 {
     static LocalGitRepositoryProvider()
     {
-        DisableOwnershipCheckOpts();
+        GlobalSettings.SetOwnerValidation(false);
     }
 
     public CommitInfo[] GetCommits(string repositoryPath, string authorName, DateTimeOffset? fromDate, DateTimeOffset? toDate)
@@ -55,25 +54,5 @@ public class LocalGitRepositoryProvider : IGitRepositoryProvider
     {
         // Builds GitHub url
         return repo.Network.Remotes.First().Url.Replace(".git", string.Empty).AppendPathSegments("commit", commit.Id);
-    }
-
-    // TODO: Replace with library methods once this included in the next release
-    // https://github.com/libgit2/libgit2sharp/pull/2093
-    // https://github.com/libgit2/libgit2sharp/issues/2036
-    private static void DisableOwnershipCheckOpts()
-    {
-        CallNativeMethod("git_libgit2_opts", 36, 0);
-    }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Major Code Smell",
-        "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields",
-        Justification = "See TODO comment above")]
-    private static void CallNativeMethod(string methodName, params object[] args)
-    {
-        Assembly libGit2SharpAssembly = typeof(Repository).GetTypeInfo().Assembly;
-        Type proxyType = libGit2SharpAssembly.GetType("LibGit2Sharp.Core.NativeMethods")!;
-        MethodInfo methodInfo = proxyType.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Static, [typeof(int), typeof(int)])!;
-        methodInfo.Invoke(null, args);
     }
 }
