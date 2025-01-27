@@ -1,16 +1,11 @@
 ﻿using Akup.Console.Report;
-using FluentAssertions;
+using Shouldly;
 
 namespace Akup.Console.Tests.Report;
 
 public class ReportServiceTests
 {
-    private readonly ReportService _reportService;
-
-    public ReportServiceTests()
-    {
-        _reportService = new ReportService(null, null, null, null);
-    }
+    private readonly ReportService _reportService = new(null, null, null, null);
 
     [Fact]
     public void Report_FromDateIsAfterToDate_ShouldThrowException()
@@ -23,13 +18,13 @@ public class ReportServiceTests
             AuthorName = string.Empty,
             TemplatePath = string.Empty,
             ReportPath = string.Empty,
-            Projects = Array.Empty<ProjectConfig>(),
+            Projects = [],
         };
 
         // act
-        Action act = () => _reportService.Report(config);
+        var act = () => _reportService.Report(config);
 
         // assert
-        act.Should().ThrowExactly<ReportException>();
+        act.ShouldThrow<ReportException>();
     }
 }

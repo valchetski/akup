@@ -1,5 +1,5 @@
-using FluentAssertions;
 using Microsoft.Extensions.Hosting;
+using Shouldly;
 
 namespace Akup.Console.Tests;
 
@@ -12,10 +12,10 @@ public class ProgramTests
         var services = GetServices();
 
         // act
-        Action act = () => Program.GenerateReport(services);
+        var act = () => Program.GenerateReport(services);
 
         // assert
-        act.Should().NotThrow();
+        act.ShouldNotThrow();
     }
 
     private static IServiceProvider GetServices()

@@ -28,7 +28,7 @@ public class LocalGitRepositoryProvider : IGitRepositoryProvider
         return Directory.GetDirectories(searchLocation, ".git", SearchOption.AllDirectories);
     }
 
-    private static Commit[] FindCommits(Repository repo, string? authorName = default, DateTimeOffset? from = default, DateTimeOffset? to = default)
+    private static Commit[] FindCommits(Repository repo, string? authorName = null, DateTimeOffset? from = null, DateTimeOffset? to = null)
     {
         var query = repo.Commits.AsEnumerable();
 
@@ -37,12 +37,12 @@ public class LocalGitRepositoryProvider : IGitRepositoryProvider
             query = query.Where(x => x.Author.Name == authorName);
         }
 
-        if (from != default)
+        if (from != null)
         {
             query = query.Where(x => x.Author.When >= from);
         }
 
-        if (to != default)
+        if (to != null)
         {
             query = query.Where(x => x.Author.When <= to);
         }
