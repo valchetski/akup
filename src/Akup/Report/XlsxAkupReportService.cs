@@ -9,7 +9,7 @@ public class XlsxAkupReportService(ITokensService<ExcelWorksheet> tokensService)
 
     static XlsxAkupReportService()
     {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        ExcelPackage.License.SetNonCommercialPersonal("Aliaksandr Valchetski");
     }
 
     public byte[] GenerateAkupReport(string templatePath, string defaultDateFormat, AkupInfo akupInfo)

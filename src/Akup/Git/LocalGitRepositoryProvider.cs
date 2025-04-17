@@ -13,14 +13,13 @@ public class LocalGitRepositoryProvider : IGitRepositoryProvider
     public CommitInfo[] GetCommits(string repositoryPath, string authorName, DateTimeOffset? fromDate, DateTimeOffset? toDate)
     {
         using var repo = new Repository(repositoryPath);
-        return FindCommits(repo, authorName, fromDate, toDate)
+        return [.. FindCommits(repo, authorName, fromDate, toDate)
             .Select(x => new CommitInfo()
             {
                 Date = x.Author.When,
                 Message = x.Message,
                 Url = GetCommitUrl(repo, x),
-            })
-            .ToArray();
+            })];
     }
 
     public string[] GetRepositoriesPaths(string searchLocation)
@@ -47,7 +46,7 @@ public class LocalGitRepositoryProvider : IGitRepositoryProvider
             query = query.Where(x => x.Author.When <= to);
         }
 
-        return query.ToArray();
+        return [.. query];
     }
 
     private static string GetCommitUrl(Repository repo, Commit commit)
