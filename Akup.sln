@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		Directory.Packages.props = Directory.Packages.props
 		README.md = README.md
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Akup.Console.Tests", "tests\Akup.Console.Tests\Akup.Console.Tests.csproj", "{5F1B9859-5FA0-4FD1-A8E6-B4C1BBCD7463}"
